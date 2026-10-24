@@ -1,0 +1,16 @@
+{
+    "key.error422.toggle": "Toggle ERROR422 visuals",
+    "error422.config.screen_title": "ERROR422 Settings",
+    "error422.config.enabled": "Mod enabled: %s",
+    "error422.config.autostart": "Client auto-start: %s",
+    "error422.config.hud": "Corrupt health and hunger: %s",
+    "error422.config.corrupt_title": "Corrupt title screen: %s",
+    "error422.config.static": "Play static sounds: %s",
+    "error422.config.world": "Allow block changes: %s",
+    "error422.config.inventory": "Allow inventory scramble: %s",
+    "error422.config.damage": "Allow lightning damage: %s",
+    "error422.config.creative": "Safe in creative mode: %s",
+    "error422.config.minutes": "Session length: %s minutes",
+    "error422.config.intensity": "Intensity: %s / 3",
+    "error422.config.note": "Server settings are read from config/error422.json. F8 toggles the visual overlay."
+}

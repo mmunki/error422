@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "dev.mmunki.error422.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "client": [
+        "HudMixin",
+        "TitleScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

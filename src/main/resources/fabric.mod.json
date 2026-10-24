@@ -1,0 +1,44 @@
+{
+    "schemaVersion": 1,
+    "id": "error422",
+    "version": "${version}",
+    "name": "ERROR422",
+    "description": "A clean-room Minecraft 26.2 Fabric horror mod inspired by the ERROR422 creepypasta. Deterministic sessions, screen corruption, chat errors, lightning, titles and an optional safe-mode finale.",
+    "authors": [
+        "mmunki"
+    ],
+    "contact": {
+        "homepage": "https://github.com/mmunki/error422",
+        "sources": "https://github.com/mmunki/error422",
+        "issues": "https://github.com/mmunki/error422/issues"
+    },
+    "license": "MIT",
+    "icon": "assets/error422/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "dev.mmunki.error422.Error422Mod"
+        ],
+        "client": [
+            "dev.mmunki.error422.client.Error422Client"
+        ],
+        "modmenu": [
+            "dev.mmunki.error422.client.Error422ModMenu"
+        ]
+    },
+    "mixins": [
+        {
+            "config": "error422.mixins.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=0.20.1",
+        "minecraft": "${minecraft_version_range}",
+        "java": ">=25",
+        "fabric-api": "*"
+    },
+    "suggests": {
+        "modmenu": ">=20.0.0"
+    }
+}
