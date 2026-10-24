@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 VERSION="${1:-26.2}"
-JAR="${2:-build/libs/error422-1.0.0+${VERSION}.jar}"
+JAR="${2:-build/libs/error422-1.1.0+${VERSION}.jar}"
 
 if [ ! -f "$JAR" ]; then
     echo "error: jar not found: $JAR" >&2
@@ -24,11 +24,18 @@ require_entry "fabric.mod.json"
 require_entry "error422.mixins.json"
 require_entry "assets/error422/icon.png"
 require_entry "assets/error422/lang/en_us.json"
-require_entry "dev/mmunki/error422/Error422Mod.class"
-require_entry "dev/mmunki/error422/client/Error422Client.class"
-require_entry "dev/mmunki/error422/client/Error422ModMenu.class"
-require_entry "dev/mmunki/error422/mixin/HudMixin.class"
-require_entry "dev/mmunki/error422/mixin/TitleScreenMixin.class"
+require_entry "assets/error422/textures/entity/error422.png"
+require_entry "tw/mmunki/error422/Error422Mod.class"
+require_entry "tw/mmunki/error422/client/Error422Client.class"
+require_entry "tw/mmunki/error422/client/Error422ModMenu.class"
+require_entry "tw/mmunki/error422/client/Error422EntityRenderer.class"
+require_entry "tw/mmunki/error422/entity/Error422Entity.class"
+require_entry "tw/mmunki/error422/entity/Error422Entities.class"
+require_entry "tw/mmunki/error422/mixin/AbstractWidgetMixin.class"
+require_entry "tw/mmunki/error422/mixin/HudMixin.class"
+require_entry "tw/mmunki/error422/mixin/LogoRendererMixin.class"
+require_entry "tw/mmunki/error422/mixin/ScreenMixin.class"
+require_entry "tw/mmunki/error422/mixin/TitleScreenMixin.class"
 
 python3 - "$JAR" "$VERSION" <<'PY'
 import json
@@ -42,18 +49,18 @@ with zipfile.ZipFile(jar_path) as jar:
     icon = jar.read("assets/error422/icon.png")
 
 assert metadata["id"] == "error422", metadata["id"]
-assert metadata["version"] == "1.0.0", metadata["version"]
+assert metadata["version"] == "1.1.0", metadata["version"]
 assert metadata["environment"] == "*", metadata["environment"]
 assert metadata["depends"]["java"] == ">=25"
 assert metadata["depends"]["fabricloader"] == ">=0.20.1"
 assert metadata["depends"]["minecraft"] == f">={version} <{version.rsplit('.', 1)[0]}.{int(version.rsplit('.', 1)[1]) + 1}"
-assert "dev.mmunki.error422.Error422Mod" in metadata["entrypoints"]["main"]
-assert "dev.mmunki.error422.client.Error422Client" in metadata["entrypoints"]["client"]
-assert "dev.mmunki.error422.client.Error422ModMenu" in metadata["entrypoints"]["modmenu"]
+assert "tw.mmunki.error422.Error422Mod" in metadata["entrypoints"]["main"]
+assert "tw.mmunki.error422.client.Error422Client" in metadata["entrypoints"]["client"]
+assert "tw.mmunki.error422.client.Error422ModMenu" in metadata["entrypoints"]["modmenu"]
 assert mixins["required"] is True
-assert mixins["package"] == "dev.mmunki.error422.mixin"
-assert "HudMixin" in mixins["client"]
-assert "TitleScreenMixin" in mixins["client"]
+assert mixins["package"] == "tw.mmunki.error422.mixin"
+for mixin in ("AbstractWidgetMixin", "HudMixin", "LogoRendererMixin", "ScreenMixin", "TitleScreenMixin"):
+    assert mixin in mixins["client"], mixin
 assert icon[:8] == b"\x89PNG\r\n\x1a\n"
 assert int.from_bytes(icon[16:20], "big") == 128
 assert int.from_bytes(icon[20:24], "big") == 128
@@ -61,9 +68,9 @@ print("fabric.mod.json, mixins and icon: ok")
 PY
 
 for entrypoint in \
-    dev.mmunki.error422.Error422Mod \
-    dev.mmunki.error422.client.Error422Client \
-    dev.mmunki.error422.client.Error422ModMenu; do
+    tw.mmunki.error422.Error422Mod \
+    tw.mmunki.error422.client.Error422Client \
+    tw.mmunki.error422.client.Error422ModMenu; do
     if ! javap -classpath "$JAR" "$entrypoint" | grep -q "public ${entrypoint}();"; then
         echo "error: $entrypoint has no public no-arg constructor" >&2
         exit 1
@@ -83,6 +90,18 @@ if [ -f "$MC_JAR" ]; then
     fi
     if ! javap -classpath "$MC_JAR" net.minecraft.client.gui.screens.TitleScreen | grep -q "public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float);"; then
         echo "error: TitleScreen.extractRenderState target not found" >&2
+        exit 1
+    fi
+    if ! javap -p -classpath "$MC_JAR" net.minecraft.client.gui.screens.Screen | grep -q "protected void extractPanorama(net.minecraft.client.gui.GuiGraphicsExtractor, float);"; then
+        echo "error: Screen.extractPanorama target not found" >&2
+        exit 1
+    fi
+    if ! javap -classpath "$MC_JAR" net.minecraft.client.gui.components.LogoRenderer | grep -q "public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor, int, float);"; then
+        echo "error: LogoRenderer.extractRenderState target not found" >&2
+        exit 1
+    fi
+    if ! javap -classpath "$MC_JAR" net.minecraft.client.gui.components.AbstractWidget | grep -q "public void playDownSound(net.minecraft.client.sounds.SoundManager);"; then
+        echo "error: AbstractWidget.playDownSound target not found" >&2
         exit 1
     fi
     echo "mixin targets: ok"

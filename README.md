@@ -1,8 +1,9 @@
-# ERROR422
+# Horror Minecraft (ERROR422)
 
-A clean-room Minecraft **26.2** Fabric horror mod inspired by the ERROR422
-creepypasta. It is not a port of the original All Rights Reserved NeoForge
-mod; it is an original implementation of the same idea for modern Fabric.
+**Horror Minecraft** is a clean-room Minecraft **26.2** Fabric horror mod
+inspired by the ERROR422 creepypasta. It is not a port of the original All
+Rights Reserved NeoForge mod; it is an original implementation of the same idea
+for modern Fabric.
 
 The mod runs on both the client and the server. It works in singleplayer
 (integrated server) and on a dedicated Fabric server. The client receives a
@@ -12,7 +13,17 @@ errors, titles and sounds follow the same schedule on both sides.
 ## Features
 
 - Five-phase session: `CALM`, `UNEASY`, `CORRUPT`, `FINAL`, `ENDED`.
+- A silent randomized **2 to 5 minute onset** before the first symptom.
 - Deterministic event schedule from a per-session seed.
+- Full-screen falling **code rain** replaces the title-screen panorama and
+  covers the in-game screen during corruption.
+- A **Horror Minecraft** title logo replaces the normal Minecraft logo.
+- No fixed top-left debug/status text on the home screen.
+- A custom **ERROR422 entity** that stalks the player, teleports, whispers,
+  emits soul particles and vanishes after 16 seconds.
+- Whisper, entity, jumpscare and finale anomalies with shrieks, heartbeats,
+  cave ambience and wither/warden sounds.
+- Terrifying random sounds on button clicks.
 - Red scanlines, glitch bars, hex error lines and an `ERR422` finale overlay.
 - Chat errors, action-bar glitches, cave/glass/lightning sounds.
 - Visual-only lightning by default; damage is opt-in.
@@ -36,7 +47,7 @@ errors, titles and sounds follow the same schedule on both sides.
 ./build.sh -Pminecraft_version=26.2 -Pfabric_api_version=0.161.0+26.2
 ```
 
-The jar is written to `build/libs/error422-1.0.0+26.2.jar`.
+The jar is written to `build/libs/error422-1.1.0+26.2.jar`.
 
 Run the unit tests and the jar verification directly:
 
@@ -101,11 +112,12 @@ visual lightning. Every destructive option has to be enabled explicitly.
 | Check | Result |
 | --- | --- |
 | Gradle build on Linux, Temurin JDK 25 | PASS |
-| JUnit session / phase / anomaly / config tests | PASS (14/14) |
+| JUnit session / phase / anomaly / config tests | PASS (16/16) |
 | `scripts/verify-jar.sh 26.2` | PASS |
-| Dedicated server with Fabric Loader 0.20.1 + Fabric API 0.161.0+26.2 | PASS |
-| Client title screen and mixin application | PASS |
-| In-world session, overlay, chat and finale | PASS |
+| Dedicated server with Fabric Loader 0.20.1 + Fabric API 0.161.0+26.2 | PASS (`Done (6.288s)`) |
+| Client startup and mixin application under Xvfb | PASS (no mixin errors) |
+| Client audio and narrator | SKIP (headless CI has no OpenAL device and no `libflite.so`) |
+| In-world entity, jumpscare and finale behavior | MANUAL (not automated in CI) |
 
 The automated checks ran on Linux with Temurin JDK 25 against Minecraft 26.2.
 The client was exercised under Xvfb; the missing system audio device reported by

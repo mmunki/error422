@@ -1,9 +1,12 @@
 {
     "required": true,
-    "package": "dev.mmunki.error422.mixin",
+    "package": "tw.mmunki.error422.mixin",
     "compatibilityLevel": "JAVA_25",
     "client": [
+        "AbstractWidgetMixin",
         "HudMixin",
+        "LogoRendererMixin",
+        "ScreenMixin",
         "TitleScreenMixin"
     ],
     "injectors": {
